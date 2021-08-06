@@ -47,10 +47,12 @@ function App() {
     console.log("#33-Traitement data route wishlist-movie:",dbResponse)
   }
 
-  var handleClickDeleteMovie = (name) => {
+  var handleClickDeleteMovie = async (name) => {
     setMoviesCount(moviesCount-1)
     setMoviesWishList(moviesWishList.filter(object => object.name != name))
+    const rawDbResponse = await fetch('/wishlist-movie/:name')  
   }
+  
 
   var cardWish = moviesWishList.map((movie,i) => {
     return (
@@ -80,6 +82,16 @@ function App() {
     console.log("#3-Traitement data route new-movies:",newMovieResponse)
     console.log("test récupération newmovieresponse",newMovieResponse[0])
     setDataMovieStatus(newMovieResponse)
+    const rawWishlistResponse = await fetch('/wishlist-movie')
+    const wishlistResponse = await rawWishlistResponse.json()
+    console.log("réponse de la db pour la route wishlist:", wishlistResponse)
+    const wishListDb = wishlistResponse.map((movie,i) => {
+      console.log("movie dans wishlistdb:",movie)
+      return {name:movie.movieName,img:movie.img}
+    })
+    setMoviesWishList(wishListDb)
+    console.log("vérif movies:", wishlistResponse)
+    setMoviesCount(wishlistResponse.length)
     }
     loadMovieData()
   },[])
